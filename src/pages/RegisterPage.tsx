@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '@/api/auth';
-import type { RegisterRequest } from '@/types';
+import type { RegisterFormState, RegisterRequest } from '@/types';
+import { parseApiError } from '@/utils/errors';
 
 export default function RegisterPage() {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState<RegisterRequest>({
+    const [formData, setFormData] = useState<RegisterFormState>({
         firstName: '',
         lastName: '',
         email: '',
@@ -23,26 +24,19 @@ export default function RegisterPage() {
         e.preventDefault();
         setError('');
         try {
-            const payload = {
-              first_name: formData.firstName,
-              last_name: formData.lastName,
-              email: formData.email,
-              password1: formData.password,
-              password2: formData.confirmPassword,
+            const payload: RegisterRequest = {
+                first_name: formData.firstName,
+                last_name: formData.lastName,
+                email: formData.email,
+                password1: formData.password,
+                password2: formData.confirmPassword,
             };
-            await register(payload);
-            navigate('/verify-otp', { state: { email: formData.email } });
-        } catch (err: any) {
-            const data = err.response?.data;
-            if (data && typeof data === 'object' && !data.detail) {
-                const flat: Record<string, string> = {};
-                Object.entries(data).forEach(([key, msgs]) => {
-                    flat[key] = Array.isArray(msgs) ? msgs[0] : String(msgs);
-                });
-                setFieldErrors(flat);
-            } else {
-              setError(data?.detail ?? 'Registrasi gagal, silakan coba lagi nanti.');
-            }
+            const res = await register(payload);
+            navigate(`/verify-otp?token=${res.data.token}`);
+        } catch (err) {
+            const { fieldErrors, generalError } = parseApiError(err, 'Register gagal, silakan coba lagi nanti.');
+            if (fieldErrors) setFieldErrors(fieldErrors);
+            if (generalError) setError(generalError);
         }
     };
 
@@ -72,7 +66,7 @@ export default function RegisterPage() {
                             required
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                         />
-                        {fieldErrors.last_name && <p className="text-red-500 text-sm mt-1">{fieldErrors.last_name}</p>}    
+                        {fieldErrors.last_name && <p className="text-red-500 text-sm mt-1">{fieldErrors.last_name}</p>}
                     </div>
                 </div>
 
@@ -121,6 +115,17 @@ export default function RegisterPage() {
                 </div>
 
                 {error && <p className="text-red-500 text-sm my-3">{error}</p>}
+
+                <p className="text-center text-sm text-gray-500 m-4">
+                    Already have an account?{' '}
+                    <button
+                        type="button"
+                        onClick={() => navigate('/login')}
+                        className="text-blue-600 hover:underline font-medium"
+                    >
+                        Log in
+                    </button>
+                </p>
 
                 <button type="submit" className="px-4 py-2 text-white bg-black rounded-md w-full hover:bg-gray-800 transition">
                     Register
