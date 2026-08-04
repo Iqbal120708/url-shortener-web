@@ -1,6 +1,6 @@
 export interface LoginRequest {
-  email: string;
-  password: string;
+    email: string;
+    password: string;
 }
 
 export interface RegisterFormState {
@@ -24,19 +24,19 @@ export interface RegisterRequest {
 // }
 
 export interface OTPFormState {
-  otpCode: string;
+    otpCode: string;
 }
 
 export interface OTPRequest {
-  token: string;
-  otp_code: string;
+    token: string;
+    otp_code: string;
 }
 
 export interface ResendOTPRequest {
-  token: string | null;
+    token: string | null;
 }
 
-interface AuthResponse {
+export interface AuthResponse {
     access: string;
     user: {
         first_name: string;

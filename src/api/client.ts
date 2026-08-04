@@ -80,7 +80,7 @@ apiClient.interceptors.response.use(
         } catch (refreshError) {
             onTokenRefreshed?.(null);
             onRefreshed(null); // notify everyone waiting: failed, no new token
-            onAuthExpired?.()
+            onAuthExpired?.();
             return Promise.reject(refreshError);
         } finally {
             isRefreshing = false;

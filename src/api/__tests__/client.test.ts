@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { apiClient, setAccessTokenRef, setOnAuthExpired } from '../client';
 
 let refreshCallCount = 0;
@@ -9,7 +10,12 @@ const server = setupServer(
     http.get('*/api/short-urls/', ({ request }) => {
         const auth = request.headers.get('Authorization');
         if (auth === 'Bearer new-token') {
-            return HttpResponse.json({ count: 0, next: null, previous: null, results: [] });
+            return HttpResponse.json({
+                count: 0,
+                next: null,
+                previous: null,
+                results: [],
+            });
         }
         return new HttpResponse(null, { status: 401 });
     }),
@@ -36,7 +42,7 @@ describe('interceptor refresh token', () => {
         const res = await apiClient.get('/api/short-urls/');
 
         expect(res.status).toBe(200);
-        expect(refreshCallCount).toBe(1); 
+        expect(refreshCallCount).toBe(1);
     });
 
     it('only refreshes once when two requests fail at the same time', async () => {
@@ -47,7 +53,7 @@ describe('interceptor refresh token', () => {
 
         expect(res1.status).toBe(200);
         expect(res2.status).toBe(200);
-        expect(refreshCallCount).toBe(1); 
+        expect(refreshCallCount).toBe(1);
     });
 
     it('rejects queued requests when refresh itself fails', async () => {
@@ -58,9 +64,9 @@ describe('interceptor refresh token', () => {
             })
         );
 
-        const onAuthExpired = vi.fn()
+        const onAuthExpired = vi.fn();
         setOnAuthExpired(onAuthExpired);
-        
+
         const results = await Promise.allSettled([
             apiClient.get('/api/short-urls/'),
             apiClient.get('/api/short-urls/'),
@@ -69,7 +75,7 @@ describe('interceptor refresh token', () => {
         expect(results[0].status).toBe('rejected');
         expect(results[1].status).toBe('rejected');
         expect(refreshCallCount).toBe(1);
-        
-        expect(onAuthExpired).toHaveBeenCalledTimes(1)
+
+        expect(onAuthExpired).toHaveBeenCalledTimes(1);
     });
 });

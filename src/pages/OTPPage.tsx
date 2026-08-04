@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+
 import { otp, resend } from '@/api/auth';
 import type { OTPFormState, OTPRequest } from '@/types';
 
@@ -7,7 +8,7 @@ export default function OTPPage() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [formData, setFormData] = useState<OTPFormState>({
-        otpCode: ''
+        otpCode: '',
     });
     const [error, setError] = useState('');
 
@@ -25,9 +26,11 @@ export default function OTPPage() {
             };
             await otp(payload);
             navigate('/login');
-        } catch (err: any) {
+        } catch (err: unknown) {
             const data = err.response?.data;
-            setError(data?.detail ?? 'Verifikasi gagal, silakan coba lagi nanti.');
+            setError(
+                data?.detail ?? 'Verifikasi gagal, silakan coba lagi nanti.'
+            );
         }
     };
 
@@ -35,9 +38,11 @@ export default function OTPPage() {
         setError('');
         try {
             await resend({ token: searchParams.get('token') });
-        } catch (err: any) {
+        } catch (err: unknown) {
             const data = err.response?.data;
-            setError(data?.detail ?? 'Gagal mengirim ulang kode, silakan coba lagi.');
+            setError(
+                data?.detail ?? 'Gagal mengirim ulang kode, silakan coba lagi.'
+            );
         }
     };
 
@@ -45,12 +50,14 @@ export default function OTPPage() {
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
             <div className="w-full max-w-sm bg-white rounded-xl shadow-sm border border-gray-200 p-8">
                 <div className="text-center mb-6">
-                    <h1 className="text-xl font-semibold text-gray-900">Verify your account</h1>
+                    <h1 className="text-xl font-semibold text-gray-900">
+                        Verify your account
+                    </h1>
                     <p className="text-sm text-gray-500 mt-1">
                         Enter the 6-digit code we sent to your email
                     </p>
                 </div>
-    
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         name="otpCode"
@@ -63,11 +70,13 @@ export default function OTPPage() {
                         required
                         placeholder="123456"
                     />
-    
+
                     {error && (
-                        <p className="text-red-500 text-sm text-center">{error}</p>
+                        <p className="text-red-500 text-sm text-center">
+                            {error}
+                        </p>
                     )}
-    
+
                     <button
                         type="submit"
                         className="w-full px-4 py-2.5 text-white bg-black rounded-md hover:bg-gray-800 transition font-medium"
@@ -75,7 +84,7 @@ export default function OTPPage() {
                         Verify
                     </button>
                 </form>
-    
+
                 <p className="text-center text-sm text-gray-500 mt-4">
                     Didn't receive the code?{' '}
                     <button

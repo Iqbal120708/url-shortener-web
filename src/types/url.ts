@@ -1,15 +1,15 @@
-interface ShortUrlRequest {
-    originalUrl: string
+export interface ShortUrlRequest {
+    originalUrl: string;
 }
 
-interface ShortUrl {
-    id: number,
-    original_url: string,
-    short_code: string,
-    is_active: bool
+export interface ShortUrl {
+    id: number;
+    original_url: string;
+    short_code: string;
+    is_active: bool;
 }
 
-interface PaginatedResponse<T> {
+export interface PaginatedResponse<T> {
     count: number;
     next: string | null;
     previous: string | null;

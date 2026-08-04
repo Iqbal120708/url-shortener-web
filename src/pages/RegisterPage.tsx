@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { register } from '@/api/auth';
 import type { RegisterFormState, RegisterRequest } from '@/types';
 import { parseApiError } from '@/utils/errors';
@@ -34,7 +35,10 @@ export default function RegisterPage() {
             const res = await register(payload);
             navigate(`/verify-otp?token=${res.data.token}`);
         } catch (err) {
-            const { fieldErrors, generalError } = parseApiError(err, 'Register gagal, silakan coba lagi nanti.');
+            const { fieldErrors, generalError } = parseApiError(
+                err,
+                'Register gagal, silakan coba lagi nanti.'
+            );
             if (fieldErrors) setFieldErrors(fieldErrors);
             if (generalError) setError(generalError);
         }
@@ -45,9 +49,13 @@ export default function RegisterPage() {
             <h1 className="text-3xl font-bold m-4">Register</h1>
             <form onSubmit={handleSubmit} className="p-4">
                 <div>
-                    <h2 className="text-white font-bold text-xl bg-black px-4 py-2 mb-4 rounded">Your Name</h2>
+                    <h2 className="text-white font-bold text-xl bg-black px-4 py-2 mb-4 rounded">
+                        Your Name
+                    </h2>
                     <div className="my-4">
-                        <label className="text-gray-600 block mb-1">First Name</label>
+                        <label className="text-gray-600 block mb-1">
+                            First Name
+                        </label>
                         <input
                             name="firstName"
                             value={formData.firstName}
@@ -55,10 +63,16 @@ export default function RegisterPage() {
                             required
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                         />
-                        {fieldErrors.first_name && <p className="text-red-500 text-sm mt-1">{fieldErrors.first_name}</p>}
+                        {fieldErrors.first_name && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {fieldErrors.first_name}
+                            </p>
+                        )}
                     </div>
                     <div className="my-4">
-                        <label className="text-gray-600 block mb-1">Last Name</label>
+                        <label className="text-gray-600 block mb-1">
+                            Last Name
+                        </label>
                         <input
                             name="lastName"
                             value={formData.lastName}
@@ -66,14 +80,22 @@ export default function RegisterPage() {
                             required
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                         />
-                        {fieldErrors.last_name && <p className="text-red-500 text-sm mt-1">{fieldErrors.last_name}</p>}
+                        {fieldErrors.last_name && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {fieldErrors.last_name}
+                            </p>
+                        )}
                     </div>
                 </div>
 
                 <div className="my-12">
-                    <h2 className="text-white font-bold text-xl bg-black px-4 py-2 mb-4 rounded">Your Email</h2>
+                    <h2 className="text-white font-bold text-xl bg-black px-4 py-2 mb-4 rounded">
+                        Your Email
+                    </h2>
                     <div className="my-4">
-                        <label className="text-gray-600 block mb-1">Email</label>
+                        <label className="text-gray-600 block mb-1">
+                            Email
+                        </label>
                         <input
                             name="email"
                             type="email"
@@ -82,14 +104,22 @@ export default function RegisterPage() {
                             required
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                         />
-                        {fieldErrors.email && <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>}
+                        {fieldErrors.email && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {fieldErrors.email}
+                            </p>
+                        )}
                     </div>
                 </div>
 
                 <div>
-                    <h2 className="text-white font-bold text-xl bg-black px-4 py-2 mb-4 rounded">Your Password</h2>
+                    <h2 className="text-white font-bold text-xl bg-black px-4 py-2 mb-4 rounded">
+                        Your Password
+                    </h2>
                     <div className="my-4">
-                        <label className="text-gray-600 block mb-1">Password</label>
+                        <label className="text-gray-600 block mb-1">
+                            Password
+                        </label>
                         <input
                             name="password"
                             type="password"
@@ -98,10 +128,16 @@ export default function RegisterPage() {
                             required
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                         />
-                        {fieldErrors.password1 && <p className="text-red-500 text-sm mt-1">{fieldErrors.password1}</p>}
+                        {fieldErrors.password1 && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {fieldErrors.password1}
+                            </p>
+                        )}
                     </div>
                     <div className="my-4">
-                        <label className="text-gray-600 block mb-1">Confirm Password</label>
+                        <label className="text-gray-600 block mb-1">
+                            Confirm Password
+                        </label>
                         <input
                             name="confirmPassword"
                             type="password"
@@ -110,7 +146,11 @@ export default function RegisterPage() {
                             required
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                         />
-                        {fieldErrors.password2 && <p className="text-red-500 text-sm mt-1">{fieldErrors.password2}</p>}
+                        {fieldErrors.password2 && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {fieldErrors.password2}
+                            </p>
+                        )}
                     </div>
                 </div>
 
@@ -127,7 +167,10 @@ export default function RegisterPage() {
                     </button>
                 </p>
 
-                <button type="submit" className="px-4 py-2 text-white bg-black rounded-md w-full hover:bg-gray-800 transition">
+                <button
+                    type="submit"
+                    className="px-4 py-2 text-white bg-black rounded-md w-full hover:bg-gray-800 transition"
+                >
                     Register
                 </button>
             </form>
