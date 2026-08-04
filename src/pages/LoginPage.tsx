@@ -25,7 +25,7 @@ export default function LoginPage() {
         try {
             const res = await login(formData);
             setAccessToken(res.data.access)
-            navigate('/short-url');
+            navigate('/dashboard');
         } catch (err: any) {
             const { fieldErrors, generalError } = parseApiError(err, 'Login gagal, silakan coba lagi nanti.');
             if (fieldErrors) setFieldErrors(fieldErrors);
