@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { setAccessTokenRef, setOnTokenRefreshed } from '../api/client';
+import { setAccessTokenRef, setOnTokenRefreshed, setOnAuthExpired } from '../api/client';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
     accessToken: string | null;
@@ -10,7 +11,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [accessToken, setAccessToken] = useState<string | null>(null);
-
+    const navigate = useNavigate();
+    
     useEffect(() => {
         setAccessTokenRef(accessToken);
     }, [accessToken]);
@@ -18,6 +20,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         setOnTokenRefreshed(setAccessToken);
     }, []);
+    
+    useEffect(() => {
+        setOnAuthExpired(() => navigate('/login'));
+    }, [navigate]);
     
     return (
         <AuthContext.Provider value={{ accessToken, setAccessToken }}>

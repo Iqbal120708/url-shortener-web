@@ -12,6 +12,7 @@ const refreshClient = axios.create({
 
 let accessTokenRef: string | null = null;
 let onTokenRefreshed: ((token: string | null) => void) | null = null;
+let onAuthExpired: (() => void) | null = null;
 
 export function setAccessTokenRef(token: string | null) {
     accessTokenRef = token;
@@ -19,6 +20,10 @@ export function setAccessTokenRef(token: string | null) {
 
 export function setOnTokenRefreshed(callback: (token: string | null) => void) {
     onTokenRefreshed = callback;
+}
+
+export function setOnAuthExpired(callback: () => void) {
+    onAuthExpired = callback;
 }
 
 apiClient.interceptors.request.use((config) => {
@@ -75,6 +80,7 @@ apiClient.interceptors.response.use(
         } catch (refreshError) {
             onTokenRefreshed?.(null);
             onRefreshed(null); // notify everyone waiting: failed, no new token
+            onAuthExpired?.()
             return Promise.reject(refreshError);
         } finally {
             isRefreshing = false;

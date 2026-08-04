@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
-import { apiClient, setAccessTokenRef } from '../client';
+import { apiClient, setAccessTokenRef, setOnAuthExpired } from '../client';
 
 let refreshCallCount = 0;
 
@@ -58,6 +58,9 @@ describe('interceptor refresh token', () => {
             })
         );
 
+        const onAuthExpired = vi.fn()
+        setOnAuthExpired(onAuthExpired);
+        
         const results = await Promise.allSettled([
             apiClient.get('/api/short-urls/'),
             apiClient.get('/api/short-urls/'),
@@ -66,5 +69,7 @@ describe('interceptor refresh token', () => {
         expect(results[0].status).toBe('rejected');
         expect(results[1].status).toBe('rejected');
         expect(refreshCallCount).toBe(1);
+        
+        expect(onAuthExpired).toHaveBeenCalledTimes(1)
     });
 });
