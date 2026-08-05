@@ -1,9 +1,8 @@
-import { Menu } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-
-import { logout } from '../api/auth';
+import { Menu } from 'lucide-react';
 import { setAccessTokenRef } from '../api/client';
+import { logout } from '../api/auth';
 
 export default function Layout() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -12,26 +11,23 @@ export default function Layout() {
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
-            if (
-                menuRef.current &&
-                !menuRef.current.contains(e.target as Node)
-            ) {
+            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
                 setMenuOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
-        return () =>
-            document.removeEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     const handleLogout = () => {
-        setAccessTokenRef(null);
         setMenuOpen(false);
         navigate('/login');
-
+    
         logout().catch(() => {
             setTimeout(() => logout().catch(() => {}), 3000);
         });
+        
+        setAccessTokenRef(null);
     };
 
     return (
